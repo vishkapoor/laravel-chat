@@ -1858,13 +1858,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Chat",
+  mounted: function mounted() {
+    var _this = this;
+
+    Echo["private"]('chat').listen('ChatEvent', function (e) {
+      _this.chat.messages.push(e.message);
+
+      _this.chat.users.push(e.userName);
+
+      _this.chat.colors.push('warning'); //console.log(e);
+
+    });
+  },
   data: function data() {
     return {
       message: '',
       chat: {
-        messages: []
+        messages: [],
+        users: [],
+        colors: []
       }
     };
   },
@@ -1873,12 +1888,24 @@ __webpack_require__.r(__webpack_exports__);
       this.message = '';
     },
     send: function send() {
+      var _this2 = this;
+
       if (!this.message.length) {
         return;
       }
 
       this.chat.messages.push(this.message);
-      this.clearMessage();
+      this.chat.users.push('You');
+      this.chat.colors.push('success');
+      axios.post('/chat', {
+        message: this.message
+      }).then(function (response) {
+        console.log(response);
+
+        _this2.clearMessage();
+      })["catch"](function (e) {
+        return console.log(e);
+      });
     }
   }
 });
@@ -1939,6 +1966,10 @@ __webpack_require__.r(__webpack_exports__);
       type: String,
       required: false,
       "default": 'warning'
+    },
+    userName: {
+      type: String,
+      required: true
     }
   },
   computed: {
@@ -47825,10 +47856,16 @@ var render = function() {
         directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
         staticClass: "list-group"
       },
-      _vm._l(_vm.chat.messages, function(value) {
+      _vm._l(_vm.chat.messages, function(value, index) {
         return _c(
           "message",
-          { key: value.index, attrs: { "color-class": "success" } },
+          {
+            key: value.index,
+            attrs: {
+              "user-name": _vm.chat.users[index],
+              "color-class": _vm.chat.colors[index]
+            }
+          },
           [_vm._v("\n            " + _vm._s(value) + "\n        ")]
         )
       }),
@@ -47946,7 +47983,7 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("small", { staticClass: "badge float-right", class: _vm.badgeClass }, [
-      _vm._v("User")
+      _vm._v(_vm._s(_vm.userName))
     ])
   ])
 }
@@ -60184,8 +60221,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "",
-  cluster: "mt1",
+  key: "148b64ba2a4f18826875",
+  cluster: "eu",
   encrypted: true
 });
 

@@ -4,8 +4,9 @@
     <ul class="list-group" v-chat-scroll>
         <message
             :key="value.index"
-            v-for="value in chat.messages"
-            color-class="success">
+            v-for="(value, index) in chat.messages"
+            :user-name=chat.users[index]
+            :color-class=chat.colors[index]>
             {{ value }}
         </message>
     </ul>
@@ -21,12 +22,22 @@
 <script type="text/javascript">
 export default {
     name: "Chat",
-
+    mounted() {
+        Echo.private('chat')
+            .listen('ChatEvent', (e) => {
+                this.chat.messages.push(e.message);
+                this.chat.users.push(e.userName);
+                 this.chat.colors.push('warning');
+                //console.log(e);
+            });
+    },
     data() {
         return {
             message: '',
             chat: {
-                messages: []
+                messages: [],
+                users: [],
+                colors: [],
             }
         }
     },
@@ -38,8 +49,19 @@ export default {
             if(!this.message.length) {
                 return;
             }
+
             this.chat.messages.push(this.message);
-            this.clearMessage();
+            this.chat.users.push('You');
+            this.chat.colors.push('success');
+
+            axios.post('/chat', {
+                message: this.message,
+            })
+            .then((response) => {
+                console.log(response)
+                this.clearMessage();
+            })
+            .catch((e) => console.log(e));
         }
     }
 }

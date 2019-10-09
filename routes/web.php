@@ -23,17 +23,10 @@ Route::middleware('auth')
         'as' => 'chat.create'
     ]);
 
-    // Route::post('/chat', [
-    //     'uses' => 'ChatController@store',
-    //     'as' => 'chat.store'
-    // ]);
-
-    Route::get('/chat', [
-        'uses' => 'ChatController@index',
-        'as' => 'chat.index'
+    Route::post('/chat', [
+        'uses' => 'ChatController@store',
+        'as' => 'chat.store'
     ]);
-
-
 
 });
 

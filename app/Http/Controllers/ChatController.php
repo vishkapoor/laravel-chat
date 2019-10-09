@@ -15,10 +15,7 @@ class ChatController extends Controller
      */
     public function index()
     {
-          event(new ChatEvent(
-            'Test Message',
-            Auth::user()
-        ));
+         abort(404);
     }
 
     /**
@@ -58,7 +55,7 @@ class ChatController extends Controller
      */
     public function show($id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -69,7 +66,7 @@ class ChatController extends Controller
      */
     public function edit($id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -81,7 +78,7 @@ class ChatController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -92,6 +89,6 @@ class ChatController extends Controller
      */
     public function destroy($id)
     {
-        //
+        abort(404);
     }
 }
