@@ -15,7 +15,10 @@ class ChatController extends Controller
      */
     public function index()
     {
-        //
+          event(new ChatEvent(
+            'Test Message',
+            Auth::user()
+        ));
     }
 
     /**

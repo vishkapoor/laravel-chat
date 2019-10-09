@@ -18,15 +18,22 @@ Route::get('/', function () {
 Route::middleware('auth')
 ->group(function() {
 
-    Route::get('/chat', [
+    Route::get('/chat/create', [
         'uses' => 'ChatController@create',
         'as' => 'chat.create'
     ]);
 
-    Route::post('/chat', [
-        'uses' => 'ChatController@store',
-        'as' => 'chat.store'
+    // Route::post('/chat', [
+    //     'uses' => 'ChatController@store',
+    //     'as' => 'chat.store'
+    // ]);
+
+    Route::get('/chat', [
+        'uses' => 'ChatController@index',
+        'as' => 'chat.index'
     ]);
+
+
 
 });
 
