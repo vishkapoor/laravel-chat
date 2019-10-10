@@ -21,7 +21,7 @@ export default {
         time: {
             type: String,
             required: true
-        }
+        },
     },
     computed: {
         className() {

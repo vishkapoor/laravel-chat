@@ -1,6 +1,11 @@
 <template>
 <div class="col-4 offset-4 offset-sm-1 col-sm-10">
-    <li class="list-group-item active">Chat Room</li>
+    <li class="list-group-item active">
+        Chat Room
+        <span class="float-right">
+            Total Users: {{ numberOfUsers }}
+        </span>
+    </li>
     <ul class="list-group" v-chat-scroll>
         <message
             :key="value.index"
@@ -42,6 +47,19 @@ export default {
                     this.typing = 'typing...';
                 }
             });
+
+            Echo.join('chat')
+                .here((users) => {
+                   this.numberOfUsers = users.length;
+                })
+                .joining((user) => {
+                  this.numberOfUsers += 1;
+                  this.$toaster.success(user.name + ' is joined the chat room.');
+                })
+                .leaving((user) => {
+                   this.numberOfUsers -= 1;
+                   this.$toaster.warning(user.name + ' has left the chat room.');
+                });
     },
     data() {
         return {
@@ -53,6 +71,8 @@ export default {
                 times:[]
             },
             typing: '',
+            numberOfUsers: 0,
+
         }
     },
     methods: {
