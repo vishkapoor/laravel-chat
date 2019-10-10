@@ -1883,6 +1883,8 @@ __webpack_require__.r(__webpack_exports__);
       _this.chat.colors.push('warning');
 
       _this.chat.times.push(_this.getTime());
+
+      _this.saveChat();
     }).listenForWhisper('typing', function (e) {
       _this.typing = '';
 
@@ -1901,6 +1903,7 @@ __webpack_require__.r(__webpack_exports__);
 
       _this.$toaster.warning(user.name + ' has left the chat room.');
     });
+    this.getChat();
   },
   data: function data() {
     return {
@@ -1919,6 +1922,15 @@ __webpack_require__.r(__webpack_exports__);
     clearMessage: function clearMessage() {
       this.message = '';
     },
+    saveChat: function saveChat() {
+      axios.post('/save-chat', {
+        chat: this.chat
+      }).then(function (response) {
+        return console.log(response.data);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
     send: function send() {
       var _this2 = this;
 
@@ -1931,7 +1943,8 @@ __webpack_require__.r(__webpack_exports__);
       this.chat.colors.push('success');
       this.chat.times.push(this.getTime());
       axios.post('/chat', {
-        message: this.message
+        message: this.message,
+        chat: this.chat
       }).then(function (response) {
         console.log(response);
 
@@ -1943,6 +1956,17 @@ __webpack_require__.r(__webpack_exports__);
     getTime: function getTime() {
       var time = new Date();
       return time.getHours() + ':' + time.getMinutes();
+    },
+    getChat: function getChat() {
+      var _this3 = this;
+
+      axios.get('/chat').then(function (response) {
+        if (!_.isEmpty(response.data)) {
+          _this3.chat = response.data;
+        }
+      })["catch"](function (error) {
+        return console.log(error);
+      });
     }
   },
   watch: {

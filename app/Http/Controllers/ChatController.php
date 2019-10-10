@@ -15,7 +15,7 @@ class ChatController extends Controller
      */
     public function index()
     {
-         abort(404);
+        return session('chat');
     }
 
     /**
@@ -41,10 +41,21 @@ class ChatController extends Controller
             'message' => 'required'
         ]);
 
+        $this->saveToSession($request);
+
         event(new ChatEvent(
             $request->message,
             Auth::user()
         ));
+    }
+
+    /**
+     * Save chat to session
+     * @param stdClass $chat
+     */
+    public function saveToSession(Request $request)
+    {
+        session(['chat' => $request->chat]);
     }
 
     /**

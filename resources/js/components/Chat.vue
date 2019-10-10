@@ -40,6 +40,7 @@ export default {
                 this.chat.users.push(e.userName);
                 this.chat.colors.push('warning');
                 this.chat.times.push(this.getTime());
+                this.saveChat();
             })
             .listenForWhisper('typing', (e) => {
                 this.typing = '';
@@ -48,18 +49,20 @@ export default {
                 }
             });
 
-            Echo.join('chat')
-                .here((users) => {
-                   this.numberOfUsers = users.length;
-                })
-                .joining((user) => {
-                  this.numberOfUsers += 1;
-                  this.$toaster.success(user.name + ' is joined the chat room.');
-                })
-                .leaving((user) => {
-                   this.numberOfUsers -= 1;
-                   this.$toaster.warning(user.name + ' has left the chat room.');
-                });
+        Echo.join('chat')
+            .here((users) => {
+               this.numberOfUsers = users.length;
+            })
+            .joining((user) => {
+              this.numberOfUsers += 1;
+              this.$toaster.success(user.name + ' is joined the chat room.');
+            })
+            .leaving((user) => {
+               this.numberOfUsers -= 1;
+               this.$toaster.warning(user.name + ' has left the chat room.');
+            });
+
+        this.getChat();
     },
     data() {
         return {
@@ -72,12 +75,18 @@ export default {
             },
             typing: '',
             numberOfUsers: 0,
-
         }
     },
     methods: {
         clearMessage() {
             this.message = '';
+        },
+        saveChat() {
+            axios.post('/save-chat', {
+                chat: this.chat,
+            })
+            .then(response => console.log(response.data))
+            .catch(error => console.log(error));
         },
         send() {
             if(!this.message.length) {
@@ -91,6 +100,7 @@ export default {
 
             axios.post('/chat', {
                 message: this.message,
+                chat: this.chat
             })
             .then((response) => {
                 console.log(response)
@@ -101,6 +111,15 @@ export default {
         getTime() {
             let time = new Date();
             return time.getHours() + ':' + time.getMinutes();
+        },
+        getChat() {
+            axios.get('/chat')
+                .then(response => {
+                    if(!_.isEmpty(response.data)) {
+                        this.chat = response.data;
+                    }
+                })
+                .catch(error => console.log(error));
         }
     },
     watch: {

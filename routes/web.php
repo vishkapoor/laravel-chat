@@ -28,6 +28,16 @@ Route::middleware('auth')
         'as' => 'chat.store'
     ]);
 
+    Route::get('/chat', [
+        'uses' => 'ChatController@index',
+        'as' => 'chat.index'
+    ]);
+
+    Route::post('/save-chat', [
+        'uses' => 'ChatController@saveToSession',
+        'as' => 'chat.save-to-session'
+    ]);
+
 });
 
 
