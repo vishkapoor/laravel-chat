@@ -28,6 +28,12 @@
         type="text"
         style="height:45px"
         class="form-control">
+    <br/>
+    <a
+        :class=" !hasMessages ? 'disabled' : '' "
+        href=""
+        @click.prevent="clearChat"
+        class="btn btn-sm btn-danger">Clear Chat</a>
 </div>
 </template>
 <script type="text/javascript">
@@ -77,7 +83,25 @@ export default {
             numberOfUsers: 0,
         }
     },
+    computed: {
+        hasMessages() {
+            return this.chat.messages.length > 0;
+        }
+    },
     methods: {
+        clearChat() {
+            if(!this.chat.messages.length) {
+                return;
+            }
+            axios.post('/clear-chat')
+                .then(response => {
+                    this.chat.messages = [];
+                    this.chat.users = [];
+                    this.chat.colors = [];
+                    this.chat.times = [];
+                    this.$toaster.success('Chat has been cleared successfully.');
+                });
+        },
         clearMessage() {
             this.message = '';
         },

@@ -38,6 +38,11 @@ Route::middleware('auth')
         'as' => 'chat.save-to-session'
     ]);
 
+    Route::post('/clear-chat', [
+        'uses' => 'ChatController@deleteSession',
+        'as' => 'chat.delete-session'
+    ]);
+
 });
 
 

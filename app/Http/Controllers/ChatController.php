@@ -58,6 +58,17 @@ class ChatController extends Controller
         session(['chat' => $request->chat]);
     }
 
+
+    /**
+     * Delete chat from session
+     * @param stdClass $chat
+     */
+    public function deleteSession(Request $request)
+    {
+        session()->forget('chat');
+    }
+
+
     /**
      * Display the specified resource.
      *

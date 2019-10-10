@@ -1870,6 +1870,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Chat",
   mounted: function mounted() {
@@ -1918,7 +1924,28 @@ __webpack_require__.r(__webpack_exports__);
       numberOfUsers: 0
     };
   },
+  computed: {
+    hasMessages: function hasMessages() {
+      return this.chat.messages.length > 0;
+    }
+  },
   methods: {
+    clearChat: function clearChat() {
+      var _this2 = this;
+
+      if (!this.chat.messages.length) {
+        return;
+      }
+
+      axios.post('/clear-chat').then(function (response) {
+        _this2.chat.messages = [];
+        _this2.chat.users = [];
+        _this2.chat.colors = [];
+        _this2.chat.times = [];
+
+        _this2.$toaster.success('Chat has been cleared successfully.');
+      });
+    },
     clearMessage: function clearMessage() {
       this.message = '';
     },
@@ -1932,7 +1959,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     send: function send() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.message.length) {
         return;
@@ -1948,7 +1975,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
 
-        _this2.clearMessage();
+        _this3.clearMessage();
       })["catch"](function (e) {
         return console.log(e);
       });
@@ -1958,11 +1985,11 @@ __webpack_require__.r(__webpack_exports__);
       return time.getHours() + ':' + time.getMinutes();
     },
     getChat: function getChat() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/chat').then(function (response) {
         if (!_.isEmpty(response.data)) {
-          _this3.chat = response.data;
+          _this4.chat = response.data;
         }
       })["catch"](function (error) {
         return console.log(error);
@@ -48052,7 +48079,25 @@ var render = function() {
           _vm.message = $event.target.value
         }
       }
-    })
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c(
+      "a",
+      {
+        staticClass: "btn btn-sm btn-danger",
+        class: !_vm.hasMessages ? "disabled" : "",
+        attrs: { href: "" },
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            return _vm.clearChat($event)
+          }
+        }
+      },
+      [_vm._v("Clear Chat")]
+    )
   ])
 }
 var staticRenderFns = []
