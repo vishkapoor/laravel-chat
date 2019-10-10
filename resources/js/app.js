@@ -9,8 +9,16 @@ require('./bootstrap');
 import Vue from 'vue'
 window.Vue = require('vue');
 
-import VueChatScroll from 'vue-chat-scroll'
-Vue.use(VueChatScroll)
+import VueChatScroll from 'vue-chat-scroll';
+Vue.use(VueChatScroll);
+
+import Toaster from 'v-toaster';
+
+// You need a specific loader for CSS files like https://github.com/webpack/css-loader
+import 'v-toaster/dist/v-toaster.css';
+
+// optional set default timeout, the default is 10000 (10 seconds).
+Vue.use(Toaster, {timeout: 3000});
 
 /**
  * The following block of code may be used to automatically register your

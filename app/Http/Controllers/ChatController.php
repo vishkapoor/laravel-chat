@@ -15,7 +15,7 @@ class ChatController extends Controller
      */
     public function index()
     {
-        //
+        return session('chat');
     }
 
     /**
@@ -41,11 +41,33 @@ class ChatController extends Controller
             'message' => 'required'
         ]);
 
+        $this->saveToSession($request);
+
         event(new ChatEvent(
             $request->message,
             Auth::user()
         ));
     }
+
+    /**
+     * Save chat to session
+     * @param stdClass $chat
+     */
+    public function saveToSession(Request $request)
+    {
+        session(['chat' => $request->chat]);
+    }
+
+
+    /**
+     * Delete chat from session
+     * @param stdClass $chat
+     */
+    public function deleteSession(Request $request)
+    {
+        session()->forget('chat');
+    }
+
 
     /**
      * Display the specified resource.
@@ -55,7 +77,7 @@ class ChatController extends Controller
      */
     public function show($id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -66,7 +88,7 @@ class ChatController extends Controller
      */
     public function edit($id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -78,7 +100,7 @@ class ChatController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -89,6 +111,6 @@ class ChatController extends Controller
      */
     public function destroy($id)
     {
-        //
+        abort(404);
     }
 }

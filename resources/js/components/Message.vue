@@ -1,7 +1,9 @@
 <template>
     <div>
         <li class="list-group-item" :class="className"><slot></slot></li>
-        <small class="badge float-right" :class="badgeClass">User</small>
+        <small class="badge float-right" :class="badgeClass">
+            {{ userName }}, {{ time }}
+        </small>
     </div>
 </template>
 <script>
@@ -11,7 +13,15 @@ export default {
             type: String,
             required: false,
             default: 'warning'
-        }
+        },
+        userName: {
+            type: String,
+            required: true,
+        },
+        time: {
+            type: String,
+            required: true
+        },
     },
     computed: {
         className() {
