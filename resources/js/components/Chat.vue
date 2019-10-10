@@ -1,15 +1,21 @@
 <template>
-<div class="col-4 offset-4">
+<div class="col-4 offset-4 offset-sm-1 col-sm-10">
     <li class="list-group-item active">Chat Room</li>
     <ul class="list-group" v-chat-scroll>
         <message
             :key="value.index"
             v-for="(value, index) in chat.messages"
             :user-name=chat.users[index]
-            :color-class=chat.colors[index]>
+            :color-class=chat.colors[index]
+            :time=chat.times[index]>
             {{ value }}
         </message>
     </ul>
+    <div
+        v-if="typing.length"
+        class="badge badge-primary badge-pill">
+        {{ typing }}
+    </div>
     <input
         @keyup.enter="send"
         placeholder="Type your message here"
@@ -27,8 +33,14 @@ export default {
             .listen('ChatEvent', (e) => {
                 this.chat.messages.push(e.message);
                 this.chat.users.push(e.userName);
-                 this.chat.colors.push('warning');
-                //console.log(e);
+                this.chat.colors.push('warning');
+                this.chat.times.push(this.getTime());
+            })
+            .listenForWhisper('typing', (e) => {
+                this.typing = '';
+                if(!_.isEmpty(e.name)) {
+                    this.typing = 'typing...';
+                }
             });
     },
     data() {
@@ -38,7 +50,9 @@ export default {
                 messages: [],
                 users: [],
                 colors: [],
-            }
+                times:[]
+            },
+            typing: '',
         }
     },
     methods: {
@@ -53,6 +67,7 @@ export default {
             this.chat.messages.push(this.message);
             this.chat.users.push('You');
             this.chat.colors.push('success');
+            this.chat.times.push(this.getTime());
 
             axios.post('/chat', {
                 message: this.message,
@@ -62,6 +77,18 @@ export default {
                 this.clearMessage();
             })
             .catch((e) => console.log(e));
+        },
+        getTime() {
+            let time = new Date();
+            return time.getHours() + ':' + time.getMinutes();
+        }
+    },
+    watch: {
+        message() {
+            Echo.private('chat')
+                .whisper('typing', {
+                    name: this.message
+                });
         }
     }
 }
