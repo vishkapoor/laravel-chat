@@ -15,6 +15,13 @@
                     @endif
 
                     You are logged in!
+                    <hr/>
+                    <p>
+                        <a href="{{ route('chat.create') }}"
+                            class="btn btn-sm btn-outline-success">
+                            Start Chat
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
